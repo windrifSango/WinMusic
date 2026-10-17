@@ -1,0 +1,66 @@
+name: Build Win Music APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Télécharger le projet
+        uses: actions/checkout@v4
+
+      - name: Compiler Win Music
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          command: echo y | buildozer -v android debug
+          buildozer_version: stable
+
+      - name: Enregistrer le fichier APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinMusic-apk
+          path: ${{ steps.buildozer.outputs.filename }}
+[200~cd /root/WinMusic
+ls -l main.py buildozer.spec .github/workflows/build.yml~
+
+cd /root/WinMusic
+
+mkdir -p .github/workflows
+
+cat > .github/workflows/build.yml <<'EOF'
+name: Build Win Music APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Build Android APK
+        uses: ArtemSBulgakov/buildozer-action@v1
+        id: buildozer
+        with:
+          command: echo y | buildozer -v android debug
+          buildozer_version: stable
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: WinMusic-apk
+          path: ${{ steps.buildozer.outputs.filename }}
